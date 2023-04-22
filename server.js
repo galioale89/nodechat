@@ -4,27 +4,40 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('./app');
 var debug = require('debug')('nodechat:server');
 var http = require('http');
+
 
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '9000');
 app.set('port', port);
-
 /**
  * Create HTTP server.
  */
-
 var server = http.createServer(app);
+
+/**
+ * Create a io connection.
+ */
+var io = require('socket.io')(server);
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.on('chat message', (msg)=>{
+    console.log('message: ' + msg);
+    io.emit('chat message', msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
  */
-
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

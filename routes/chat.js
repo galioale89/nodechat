@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
+/*GET chat page*/
 router.get('/', (req, res, next) => {
-  res.send('respond with a resource');
+    res.render('chat', {});
 });
 
 module.exports = router;
