@@ -1,9 +1,21 @@
 var express = require('express');
-var router = express.Router();
+var chat = require('./chat');
+var users = require('./users');
+
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const route = (app) => {
+  // view engine setup
+  app.set('view engine', 'ejs');
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: false }));
 
-module.exports = router;
+  app.route('/').get((_, res, next) => {
+    res.render('index', { title: 'Express' });
+  });
+
+  app.use('/chat', chat)
+  app.use('/users', users)
+}
+
+module.exports = route;

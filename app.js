@@ -3,41 +3,52 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var db = require('./db');
+var route = require('./routes')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var chatRouter = require('./routes/chat')
+var chatRoute = require('./routes/chat');
 
-var app = express();
+class App {
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+  constructor() {
+    this.server = express();
+    //db.connect();
+    this.start();
+    route(this.server);
+    this.middlewares();
+  }
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+  async start(){
+    this.server.use(logger('dev'));
+    // view engine setup
+    this.server.set('views', path.join(__dirname, 'views'));
+    this.server.set('view engine', 'ejs');
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/chat', chatRouter);
+    this.server.use(express.json());
+    this.server.use(express.urlencoded({ extended: false }));
+    this.server.use(cookieParser());
+    this.server.use(express.static(path.join(__dirname, 'public')));
+  }
+  
+  async middlewares() {
+    // catch 404 and forward to error handler
+    this.server.use(function (req, res, next) {
+      next(createError(404));
+    });
 
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+    this.server.use('/chat',chatRoute);
 
-// error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+    // error handler
+    this.server.use(function (err, req, res, next) {
+      // set locals, only providing error in development
+      res.locals.message = err.message;
+      res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+      // render the error page
+      res.status(err.status || 500);
+      res.render('error');
+    });
+  }
+}
 
-module.exports = app;
+module.exports = new App().server;
