@@ -1,0 +1,22 @@
+{
+  "name": "websocket_server",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "nodemon index.js",
+    "build": "yarn run sucrase index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "helmet": "^6.1.5",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22",
+    "sucrase": "^3.32.0",
+    "ws": "^8.13.0"
+  }
+}

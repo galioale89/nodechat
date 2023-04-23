@@ -1,9 +1,0 @@
-{
-    "DB_SERVER": {
-        "DB_HOST": "localhost",
-        "DB_PORT": "27017",
-        "DB_NAME": "NodeChat",
-        "DB_USER": "admin",
-        "DB_PWD": "123456"
-    }
-}

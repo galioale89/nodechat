@@ -1,0 +1,82 @@
+* { 
+    margin: 0.5rem;
+    padding: 0; 
+
+}
+body { 
+    font: 13px Helvetica, Arial;
+    max-width: 99%;
+}
+
+.quadro-scroll {
+    overflow: auto;
+}
+
+.lista {
+    width: 100%;
+    border-width: 0.1rem;
+    border-style: solid;
+    border-color: #eee;
+    bottom: 0;
+}
+.messages {
+    border-style: solid;
+    border-width: 0.1rem;
+    border-color: #000;
+    overflow-y: auto;
+}
+
+form { 
+    padding: 3px; 
+    width: 35%;
+    bottom: 0;
+    border: solid 0.1rem #eee;
+    border-radius: 1rem;
+    position: absolute;
+    bottom: 0
+}
+form input { 
+    width: 79%;
+    border: 0; 
+    padding: 10px; 
+    margin-right: .5%;
+}
+form button { 
+    width: 20%; 
+    background: rgb(130, 224, 255); 
+    border: none; 
+    padding: 10px; 
+}
+#messages { 
+    list-style-type: 
+    none; 
+    margin: 0; 
+    padding: 0; 
+}
+#messages li {
+     padding: 5px 10px; 
+}
+#messages li:nth-child(odd) { 
+    background: #eee; 
+}
+
+#messagesP { 
+    list-style-type: 
+    none; 
+    margin: 0; 
+    padding: 0; 
+}
+#messagesP li {
+     padding: 5px 10px; 
+}
+
+#messagesP li:hover {
+    font-size: large;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#isSelected {
+    font-size: large;
+    font-weight: bold;
+}

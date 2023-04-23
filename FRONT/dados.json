@@ -1,0 +1,14 @@
+{
+    "listaPessoas": [
+        {
+            "id": "123456789159875",
+            "name": "Alexandre",
+            "nickname": "ale"
+        },
+        {
+            "id": "65498741256aaaa",
+            "name": "Geandra",
+            "nickname": "ge"
+        }
+    ]
+}

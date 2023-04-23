@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  dev:
+    container_name: nodechat_server
+    build: .
+    command: npm run start
+    working_dir: /app
+    ports:
+      - '3000:3000'
+    volumes:
+     - ./:/app:cached
+    depends_on:
+      - db
+  
+  db:
+    image: 'mongo'
+    container_name: nodechat_db
+    environment:
+      - DB_HOST="localhost",
+      - DB_PORT="27017",
+      - DB_NAME="NodeChat",
+      - DB_USER="node",
+      - DB_PWD="nodemongo"
+    ports:
+      - '27017:27017'
+    volumes:
+      - ./data/db:/data/db      

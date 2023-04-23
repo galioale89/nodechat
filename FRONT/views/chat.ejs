@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Socket.IO chat</title>
+  <link rel='stylesheet' href='/stylesheets/stylechat.css' />
+  <link rel='stylesheet' href='/stylesheets/bootstrap.css' />
+</head>
+
+<body>
+  <div class="row">
+    <div class="col-sm-7" style="position: relative;">
+      <h4>Mensagens</h4>
+      <div class="messages">
+        <ul id="messages">
+          <label id="wait">Aguardando mensagens...</label>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-4 lista quadro-scroll">
+      <h4>Falar com:</h4>
+      <ul id="messagesP">
+        <li>Teste</li>
+        <% for(var i=0;i < listaPessoas.length; i++){ %>
+          <li onclick="selecionar(`${<%=listaPessoas[i].id %>}`)" id=<%=listaPessoas[i].id %>><%=listaPessoas[i].nickname%></li>
+        <% } %>
+      </ul>
+      <form action="">
+        <input id="m" autocomplete="off" /><button class="btn-sm btn-primary">Send</button>
+      </form>
+    </div>
+    </section>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+      function selecionar(string id){
+        alert(id);
+      }
+    </script>
+    <script>
+      $(() => {
+        var socket = io();
+        $('form').submit(() => {
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+
+        socket.on('chat message', (msg) => {
+          $('#messages').append($('<li>').text(msg));
+          $('#wait').remove();
+        });
+      });
+    </script>
+</body>
+
+</html>
