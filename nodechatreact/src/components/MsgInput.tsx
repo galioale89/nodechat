@@ -2,28 +2,31 @@ import react, { useState, useContext, FormEvent, ChangeEvent } from 'react';
 import { InputGroup, Form, Button } from 'react-bootstrap';
 import { MessageContext } from '../context';
 import { MessageContextType, IMessage } from '../model/message';
-import { FormControl } from 'react-bootstrap';
-import { FormControlProps } from 'react-bootstrap';
 
 type Props = {
-    sendClick: (msg: string, date: string) => void;
+    sendClick: (msg: IMessage) => void;
 };
 
 const MsgInput: React.FC<Props> = props => {
+
     const { saveMessage } = useContext(MessageContext) as MessageContextType;
+    const [msg, setMsg] = useState<string>("");
     const [formData, setFormData] = useState<IMessage | {}>();
 
     const handlerForm = (e: ChangeEvent<HTMLInputElement>): void => {
-        setFormData({
-            ...formData,
-            [e.currentTarget.id]: e.currentTarget.value,
-        });
+        setMsg(e.currentTarget.value);
     };
 
-    const handleSaveMessage = (e: FormEvent, formData: IMessage | any) => {
+    const handleSaveMessage = (e: FormEvent) => {
         e.preventDefault();
-        props.sendClick(formData, new Date().toUTCString());
-        saveMessage(formData);
+        const newMsg: IMessage = {
+            nickname: "teste",
+            text: msg,
+            created_dt: new Date()
+        };
+        setFormData(newMsg);
+        props.sendClick(newMsg);
+        saveMessage(newMsg);
     };
 
     return (
@@ -31,7 +34,7 @@ const MsgInput: React.FC<Props> = props => {
             <InputGroup size="sm">
                 <InputGroup.Text id="inputGroup-sizing-sm" >Digite sua mensagem</InputGroup.Text>
                 <Form.Control as="textarea" aria-describedby='inputGroup-sizing-sm' onChange={handlerForm}></Form.Control>
-                <Button variant="primary" size="sm" onClick={(e) => handleSaveMessage(e, formData)}>
+                <Button variant="primary" size="sm" onClick={(e) => handleSaveMessage(e)}>
                     Enviar
                 </Button>
             </InputGroup>

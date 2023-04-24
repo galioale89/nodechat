@@ -5,11 +5,12 @@ import { MessageContext } from '../context';
 
 const MsgList: React.FC = () => {
     const { messages } = useContext(MessageContext) as MessageContextType;
+    
     return (
             <ListGroup as='ul'>
                 {messages.map((msg: IMessage) => (
-                    <ListGroup key={msg.created_dt.toUTCString()} as="li">
-                        <h6>{msg.nickname} - {msg.text} - {msg.created_dt.toUTCString()}</h6>
+                    <ListGroup key={Math.random().toString(36).substring(2,10)} as="li">
+                        <h6>{msg.nickname} - {msg.text}</h6>
                     </ListGroup>
                 ))}
             </ListGroup>

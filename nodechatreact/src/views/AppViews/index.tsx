@@ -10,21 +10,7 @@ import socketIOClient, { Socket } from 'socket.io-client';
 import MsgInput from '../../components/MsgInput';
 import MsgList from '../../components/MsgList';
 import Members from '../../components/Members';
-
-interface IRootState {
-    auth: {
-        isLogged: boolean;
-        id: string | null;
-        nickname: string | null;
-        token: string | null
-    },
-    app: {
-        inChannel: boolean;
-        messages: [];
-        members: [];
-    }
-};
-
+import { IMessage } from '../../model/message';
 
 const AppView: React.FC = () => {
 
@@ -35,15 +21,19 @@ const AppView: React.FC = () => {
     // );
     const [loading, setLoading] = useState(false);
     const [socket, setSocket] = useState<Socket | null>(null);
+    const [messages, setMessages] = useState<IMessage[]>([]);
 
     useEffect(() => {
         const socket = socketIOClient("http://localhost:3200", { transports: ["websocket"] });
         setSocket(socket);
     }, []);
 
-    const createMessage = async (text: string, date: string) => {
+    const createMessage = async (msg: IMessage) => {
         if (!socket) return;
-        socket?.emit('chat message', text);
+        socket?.emit('chat message', msg.text);
+        socket.on('chat message', (msg)=>{
+            alert(msg);
+        })
     };
 
     return (
@@ -52,7 +42,6 @@ const AppView: React.FC = () => {
                 <Col xs={8}>
                     <Form.Label className={styles.label}>Mensagens</Form.Label>
                     <Form className={styles.container}>
-
                         <MsgList />
                     </Form>
                 </Col>

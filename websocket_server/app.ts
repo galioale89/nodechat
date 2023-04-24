@@ -3,10 +3,10 @@ import { createServer, Server } from 'http';
 import * as socketIO from 'socket.io';
 
 class App {
-    public app: express.Appliction;
+    public app: express.Application;
     public server: Server;
     private io: socketIO.Server;
-    public PORT: number = 3200;
+    public PORT: number = 8100;
 
     constructor(){
         this.routes();
@@ -30,8 +30,9 @@ class App {
         this.io.on("connection", (socket: any) => {
             console.log("a user connected");
 
-            socket.on("chat message", (msg) => {
+            socket.on("chat message",  (msg) => {
                 console.log("message " + msg);
+                socket.emit("chat message", msg)
             });
 
             socket.on("disconnect", () => {
