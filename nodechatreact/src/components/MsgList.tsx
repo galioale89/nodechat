@@ -1,19 +1,57 @@
-import React, { useContext } from 'react';
-import { MessageContextType, IMessage } from '../model/message';
-import { FormGroup, ListGroup } from 'react-bootstrap'
-import { MessageContext } from '../context';
+import styles from '../../src/styles/styles.module.scss';
+import React, { useState, useEffect } from 'react';
+import { ListGroup, Form, Container, Row, Col } from 'react-bootstrap'
+import { IMessage } from '../model/message'
+import { Socket } from 'socket.io-client';
 
-const MsgList: React.FC = () => {
-    const { messages } = useContext(MessageContext) as MessageContextType;
-    
+interface Props {
+    socket: Socket;
+};
+
+const MsgList: React.FC<Props> = ({ socket }) => {
+
+    const [messages, setMessages] = useState<IMessage[]>([]);
+
+    useEffect(() => {
+        socket.on('responseMessage', (msg: IMessage) => {
+            setMessages([...messages, msg]);
+        })
+    }, [socket, messages]);
+
     return (
+        <Container>
+            <Form.Label className={styles.label}>Mensagens</Form.Label>
             <ListGroup as='ul'>
                 {messages.map((msg: IMessage) => (
-                    <ListGroup key={Math.random().toString(36).substring(2,10)} as="li">
-                        <h6>{msg.nickname} - {msg.text}</h6>
-                    </ListGroup>
+                    msg.name === localStorage.getItem("userName") ? (
+                        <ListGroup key={msg.id} as="li">
+                            <Form.Label className={styles.member}>{msg.name}:</Form.Label>
+                            <Row className="g-2">
+                                <Col className="md">
+                                    <Form.Label className={`${styles.text} ${styles.mine}`}>{msg.text}</Form.Label>
+                                </Col>
+                                <Col className="md">
+                                    <Form.Label className={styles.text}>{msg.created_dt}</Form.Label>
+                                </Col>
+                            </Row>
+
+                        </ListGroup>
+                    ) : (
+                        <ListGroup key={msg.id} as="li">
+                            <Row className="g-2">
+                                <Form.Label className={styles.member}>{msg.name}:</Form.Label>
+                                <Col className="md">
+                                    <Form.Label className={`${styles.text} ${styles.other}`}>{msg.text}</Form.Label>
+                                </Col>
+                                <Col className="md">
+                                    <Form.Label className={styles.text}>{msg.created_dt}</Form.Label>
+                                </Col>
+                            </Row>
+                        </ListGroup>
+                    )
                 ))}
             </ListGroup>
+        </Container>
     );
 }
 

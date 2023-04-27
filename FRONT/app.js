@@ -27,6 +27,7 @@ class App {
     this.server.use(express.urlencoded({ extended: false }));
     this.server.use(cookieParser());
     this.server.use(express.static(path.join(__dirname, 'public')));
+    this.server.use(express.static(path.join(__dirname, 'scripts')));
   }
   
   async middlewares() {

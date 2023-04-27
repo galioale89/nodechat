@@ -1,43 +1,55 @@
-import react, { useState, useContext, FormEvent, ChangeEvent } from 'react';
-import { InputGroup, Form, Button } from 'react-bootstrap';
+import styles from '../../src/styles/styles.module.scss';
+import { useState, useContext, useEffect, FormEvent, useRef, ChangeEvent } from 'react';
+import { Form, Button, FloatingLabel, Row, Col } from 'react-bootstrap';
 import { MessageContext } from '../context';
-import { MessageContextType, IMessage } from '../model/message';
+import { Socket } from 'socket.io-client';
+import { Message, IDirect, IMessage, MessageContextType, Direct } from '../model/message';
+import { FormControl } from 'react-bootstrap';
 
-type Props = {
-    sendClick: (msg: IMessage) => void;
+interface Props {
+    socket: Socket;
 };
 
 const MsgInput: React.FC<Props> = props => {
 
-    const { saveMessage } = useContext(MessageContext) as MessageContextType;
-    const [msg, setMsg] = useState<string>("");
-    const [formData, setFormData] = useState<IMessage | {}>();
+    const [message, setMessage] = useState<string>("");
+    const { saveMessage, direct } = useContext(MessageContext) as MessageContextType;
 
-    const handlerForm = (e: ChangeEvent<HTMLInputElement>): void => {
-        setMsg(e.currentTarget.value);
-    };
+    const refNewMessage = useRef<HTMLInputElement>(null);
+    useEffect(() => {
+        const msg: HTMLInputElement = document.querySelector("#newMessage")!;
+        if (typeof direct?.destination != "undefined") {
+            msg.value = `@${direct?.destination} `;
+        }
+        msg.focus();
+    });
 
-    const handleSaveMessage = (e: FormEvent) => {
+    const handleSendMessage = (e: FormEvent) => {
         e.preventDefault();
-        const newMsg: IMessage = {
-            nickname: "teste",
-            text: msg,
-            created_dt: new Date()
-        };
-        setFormData(newMsg);
-        props.sendClick(newMsg);
-        saveMessage(newMsg);
+        const newMessage: IMessage = Message.message({
+            text: message,
+            name: localStorage.getItem("userName")!,
+            id: `${props.socket.id}${Math.random()}`,
+            created_dt: new Date().toUTCString(),
+            socketID: props.socket.id
+        });
+        if (message.trim() && localStorage.getItem("userName")) {
+            props.socket.emit("message", newMessage);
+        }
+
+        saveMessage(newMessage);
+
+        setMessage("");
     };
 
     return (
-        <Form>
-            <InputGroup size="sm">
-                <InputGroup.Text id="inputGroup-sizing-sm" >Digite sua mensagem</InputGroup.Text>
-                <Form.Control as="textarea" aria-describedby='inputGroup-sizing-sm' onChange={handlerForm}></Form.Control>
-                <Button variant="primary" size="sm" onClick={(e) => handleSaveMessage(e)}>
+        <Form className={styles.input}>
+            <FloatingLabel className={styles.messageBox} label="Digite sua mensagem">
+                <Form.Control aria-describedby='inputGroup-sizing-sm' ref={refNewMessage} id="newMessage" className="mb-3" onChange={e => setMessage(e.target.value)}></Form.Control>
+                <Button variant="primary" size="sm" type="submit" onClick={handleSendMessage}>
                     Enviar
                 </Button>
-            </InputGroup>
+            </FloatingLabel>
         </Form>
     );
 };
