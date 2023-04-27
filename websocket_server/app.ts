@@ -1,7 +1,7 @@
 import express, { application } from 'express';
 import { createServer, Server } from 'http';
 import socketIO, { Socket } from 'socket.io';
-import cors from 'cors';
+import cors from 'cor';
 
 type User = {
     userName: string;
